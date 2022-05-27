@@ -1,3 +1,3 @@
 obj = TareaEconometriaII('cps09mar/cps09mar.xlsx');
 df = obj.df;
-obj.PreguntaA
+[MCO_Coef , Std_err_Coef] = obj.PreguntaA;
