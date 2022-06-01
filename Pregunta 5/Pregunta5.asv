@@ -1,0 +1,11 @@
+ajust_p = (sqrt(5) - 1)/(2 *sqrt(5));
+ajust_p2 = 1 - (sqrt(5) - 1)/(2 *sqrt(5));
+
+B= 1000;
+beta_bootstrap = zeros(4,B);
+for ii=1:B
+   residstar = datasample(resid,obs);
+   y = zeros(obs);
+   for jj=1:obs
+       y(jj)=
+end
