@@ -22,7 +22,7 @@ obs = length(y);
 
 ajust_p = (sqrt(5) - 1)/(2 *sqrt(5));
 ajust_p2 = 1 - (sqrt(5) - 1)/(2 *sqrt(5));
-B= 5000;
+B= 1000;
 beta_bootstrap = zeros(6,B);
 for ii=1:B
    % crear un vector de 1 y 0, con una proporción de 1 cercana al 72% y 0
@@ -45,3 +45,32 @@ for ii=1:B
 end
 %Desviación estándar por filas de la matriz de coeficientes estimados
 error_estandar_b = std(beta_bootstrap,0,2);
+%se = std(bootstrp(1000,@(bootr)regress(x*mco_coef+bootr,x),e)) para
+%comprobar
+
+
+%%%Intervalos de Confianza
+
+jack = zeros(length(y),6);
+for i = (1:size(x,1))
+  yi = y;
+  yi(i,:) = [];
+  xi = x;
+  xi(i,:) = [];
+  betai = xi'*xi\(xi'*yi);
+  ei = yi-xi*betai;
+  jack(i,:) = betai';
+end
+
+mj = mean(jack);
+d = (sum((mj-jack).^2)).^(3/2);
+a = sum((mj-jack).^3)./d/6;
+z0 = norminv(mean(beta_bootstrap' <= mco_coef'));
+z1 = norminv(0.025);
+z2 = norminv(0.975);
+xa1 = normcdf(z0+(z1+z0)./(1-a.*(z1+z0)));
+xa2 = normcdf(z0+(z2+z0)./(1-a.*(z2+z0)));
+qa1 = diag(quantile(beta_bootstrap',xa1));
+qa2 = diag(quantile(beta_bootstrap',xa2));
+display('Bias-Corrected Percentile 95% Confidence Intervals');
+display([qa1,qa2]);
