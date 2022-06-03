@@ -22,12 +22,15 @@ obs = length(y);
 
 ajust_p = (sqrt(5) - 1)/(2 *sqrt(5));
 ajust_p2 = 1 - (sqrt(5) - 1)/(2 *sqrt(5));
-B= 1000;
+B= 5000;
 beta_bootstrap = zeros(6,B);
 for ii=1:B
-   % hay que transformar los errores, pregunta para mí: aplicar por cluster
-   % o a toda la población ?
+   % crear un vector de 1 y 0, con una proporción de 1 cercana al 72% y 0
+   % 27%
    ajuste_e_aux= binornd(1,ajust_p2,length(e),1);
+   % Realizar la transformación de los errores, un (sqrt(5) - 1)/
+   % (2*sqrt(5))  se ajusta por 1+sqrt(5)/2 y un (sqrt(5) + 1)/
+   % (2*sqrt(5)) se ajusta por 1-sqrt(5)/2.
    ajuste_e =  (1 - sqrt(5))/2 * ajuste_e_aux + (1 + sqrt(5))/2 * (1 - ajuste_e_aux);
    err_wild_bootrstarp = e .* ajuste_e;
    residstar = datasample(err_wild_bootrstarp,obs);
@@ -40,5 +43,5 @@ for ii=1:B
    betastar = (x'*x)\(x'*ystar);
    beta_bootstrap(:,ii)= betastar;
 end
-
+%Desviación estándar por filas de la matriz de coeficientes estimados
 error_estandar_b = std(beta_bootstrap,0,2);
